@@ -19,6 +19,8 @@ builder.Services.AddDbContext<EkitapDbContext>(options =>
 builder.Services.AddScoped<E_Kitap_API.Services.WordDocumentReader>();
 
 builder.Services.AddScoped<E_Kitap_API.Services.ContactInfoCleaner>();
+builder.Services.AddScoped<E_Kitap_API.Services.PdfPageCounter>();
+builder.Services.AddScoped<E_Kitap_API.Services.BookPdfBuilder>();
 
 var app = builder.Build();
 

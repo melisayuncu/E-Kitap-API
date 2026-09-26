@@ -2,6 +2,7 @@
 using E_Kitap_API.Data;
 using E_Kitap_API.Models;
 using E_Kitap_API.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace E_Kitap_API.Controllers
 {
@@ -12,12 +13,14 @@ namespace E_Kitap_API.Controllers
 		private readonly EkitapDbContext _context;
 		private readonly IWebHostEnvironment _env;
 		private readonly WordDocumentReader _wordReader;
+		private readonly BookPdfBuilder _pdfBuilder;
 
-		public BooksController(EkitapDbContext context, IWebHostEnvironment env, WordDocumentReader wordReader)
+		public BooksController(EkitapDbContext context, IWebHostEnvironment env, WordDocumentReader wordReader, BookPdfBuilder pdfBuilder)
 		{
 			_context = context;
 			_env = env;
 			_wordReader = wordReader;
+			_pdfBuilder = pdfBuilder;
 		}
 
 		[HttpPost]
@@ -97,6 +100,49 @@ namespace E_Kitap_API.Controllers
 			};
 
 			return Ok(response);
+		}
+		[HttpPost("{id}/generate")]
+		public async Task<IActionResult> GenerateBook(int id)
+		{
+			var book = await _context.Books
+				.Include(b => b.Submissions)
+				.FirstOrDefaultAsync(b => b.Id == id);
+
+			if (book == null)
+				return NotFound("Kitap bulunamadı.");
+
+			if (book.Submissions.Count != 10)
+				return BadRequest("Kitaba ait tam 10 bildiri bulunamadı.");
+
+			book.Status = BookStatus.Processing;
+			await _context.SaveChangesAsync();
+
+			try
+			{
+				var pdfBytes = _pdfBuilder.Build(book.Name, book.Submissions.ToList(), _env.WebRootPath);
+
+				var generatedDir = Path.Combine(_env.WebRootPath, "generated");
+				Directory.CreateDirectory(generatedDir);
+
+				var fileName = $"kitap_{book.Id}.pdf";
+				var fullPath = Path.Combine(generatedDir, fileName);
+				await System.IO.File.WriteAllBytesAsync(fullPath, pdfBytes);
+
+				book.PdfFilePath = Path.Combine("generated", fileName);
+				book.Status = BookStatus.Completed;
+				book.ErrorMessage = null;
+				await _context.SaveChangesAsync();
+
+				return Ok(new { book.Id, book.Name, Status = book.Status.ToString(), PdfUrl = $"/generated/{fileName}" });
+			}
+			catch (Exception ex)
+			{
+				book.Status = BookStatus.Failed;
+				book.ErrorMessage = ex.Message;
+				await _context.SaveChangesAsync();
+
+				return StatusCode(500, new { message = "PDF oluşturulurken bir hata oluştu.", detail = ex.Message });
+			}
 		}
 	}
 }

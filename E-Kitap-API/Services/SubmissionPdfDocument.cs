@@ -42,6 +42,11 @@ namespace E_Kitap_API.Services
 				page.Margin(2, Unit.Centimetre);
 				page.DefaultTextStyle(x => x.FontSize(11));
 
+				page.Footer().AlignCenter().Text(x =>
+				{
+					x.CurrentPageNumber();
+				});
+
 				page.Content().Column(column =>
 				{
 					SubmissionContentComposer.Compose(column, _submission);
