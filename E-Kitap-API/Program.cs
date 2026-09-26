@@ -4,6 +4,16 @@ using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("ReactApp", policy =>
+	{
+		policy.WithOrigins("http://localhost:5173")
+			  .AllowAnyHeader()
+			  .AllowAnyMethod();
+	});
+});
+
 QuestPDF.Settings.License = LicenseType.Community; // to use QuestPDF freely, we need to indicate "community" license
 
 // Add services to the container.
@@ -25,6 +35,8 @@ builder.Services.AddScoped<E_Kitap_API.Services.BookPdfBuilder>();
 var app = builder.Build();
 
 app.UseStaticFiles();
+
+app.UseCors("ReactApp");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
