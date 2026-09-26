@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using E_Kitap_API.Data;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+QuestPDF.Settings.License = LicenseType.Community; // to use QuestPDF freely, we need to indicate "community" license
 
 // Add services to the container.
 
@@ -12,6 +15,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<EkitapDbContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+
+builder.Services.AddScoped<E_Kitap_API.Services.WordDocumentReader>();
+
+builder.Services.AddScoped<E_Kitap_API.Services.ContactInfoCleaner>();
 
 var app = builder.Build();
 
