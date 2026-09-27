@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-
+// Submission Uploading Form
 interface BookUploadFormProps {
   onSubmit: (bookName: string, files: File[]) => void;
   isSubmitting: boolean;
@@ -13,6 +13,9 @@ export default function BookUploadForm({ onSubmit, isSubmitting }: BookUploadFor
 
   const REQUIRED_FILE_COUNT = 10;
 
+    //with every new file selection, it first checks for the .docx extension
+    //then aggregates the files with the existing ones 
+    //if the total exceeds 10, it displays an error and rejects the selection
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     setError(null);
     const selected = Array.from(e.target.files ?? []);

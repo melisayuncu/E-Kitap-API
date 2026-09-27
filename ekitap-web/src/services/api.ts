@@ -1,8 +1,6 @@
 import axios from "axios";
 import type { CreateBookResponse, GenerateBookResponse } from "../types/book";
 
-// Backend'in çalýþtýðý adres — Visual Studio'da F5 ile baþlattýðýnda
-// Swagger'da gördüðün port neyse burasý da o olmalý
 const API_BASE_URL = "https://localhost:7120/api";
 
 export async function createBook(

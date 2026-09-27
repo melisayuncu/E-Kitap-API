@@ -34,9 +34,9 @@ builder.Services.AddScoped<E_Kitap_API.Services.BookPdfBuilder>();
 
 var app = builder.Build();
 
+app.UseCors("ReactApp");
 app.UseStaticFiles(); //To enable external access to files in the wwwroot folder (including PDFs) via URL
 
-app.UseCors("ReactApp");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

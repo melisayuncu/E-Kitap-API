@@ -3,6 +3,7 @@ import BookUploadForm from "./components/BookUploadForm";
 import { createBook, generateBook } from "./services/api";
 import type { BookStatus } from "./types/book";
 import "./App.css";
+import PdfViewer from "./components/PdfViewer";
 
 type AppState = "idle" | "submitting" | "completed" | "error";
 
@@ -160,13 +161,14 @@ function App() {
                 {state === "completed" && pdfUrl && (
           <div className="card result-panel">
             <p className="result-panel__title">E-kitabınız hazır!</p>
+            <PdfViewer url={pdfUrl} />
             <a
               className="result-panel__link"
               href={pdfUrl}
               target="_blank"
               rel="noreferrer"
             >
-              PDF'i Görüntüle / İndir
+              PDF'i Yeni Sekmede Aç / İndir
             </a>
             <div className="result-panel__actions">
               <button className="btn-secondary" onClick={handleReset}>
@@ -176,6 +178,7 @@ function App() {
           </div>
     )
 }
+               
       </main >
     </div >
   );
