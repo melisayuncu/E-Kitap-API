@@ -85,7 +85,7 @@ export default function BookUploadForm({ onSubmit, isSubmitting }: BookUploadFor
                     value={bookName}
                     onChange={(e) => setBookName(e.target.value)}
                     disabled={isSubmitting}
-                    placeholder="Örn: 2026 Konferansı Bildiri Kitabı"
+                    placeholder="Örn: Konferans Bildirileri Kitabı"
                 />
             </div>
 
