@@ -1,3 +1,6 @@
+
+//We define the structure of the JSON responses from the backend here
+
 export type BookStatus = "Pending" | "Processing" | "Completed" | "Failed";
 
 export interface CreateBookResponse {

@@ -26,7 +26,7 @@ namespace E_Kitap_API.Controllers
 		[HttpPost]
 		[RequestSizeLimit(100_000_000)]
 		public async Task<ActionResult<CreateBookResponse>> CreateBook(
-			[FromForm] string bookName,
+			[FromForm] string bookName, // it will read from a form data
 			[FromForm] List<IFormFile> files)
 		{
 			if (string.IsNullOrWhiteSpace(bookName))
@@ -35,13 +35,14 @@ namespace E_Kitap_API.Controllers
 			if (files == null || files.Count != 10)
 				return BadRequest("Tam olarak 10 adet .docx dosyası yüklenmelidir.");
 
-			foreach (var file in files)
+			foreach (var file in files) // Is the file format is .docx?
 			{
 				var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
 				if (ext != ".docx")
 					return BadRequest($"Yalnızca .docx dosyaları kabul edilir: {file.FileName}");
 			}
-
+			// a new book object creation
+			// id and CreatedAt will automatically filled
 			var book = new Book
 			{
 				Name = bookName,
@@ -64,7 +65,7 @@ namespace E_Kitap_API.Controllers
 					await file.CopyToAsync(stream);
 				}
 
-				// Gerçek başlığı docx içeriğinden çıkar
+				// export the real title from docx content
 				string title;
 				try
 				{
@@ -73,7 +74,7 @@ namespace E_Kitap_API.Controllers
 				}
 				catch
 				{
-					// Okuma başarısız olursa dosya adına geri düş, akışı durdurma
+					// If reading fails fall back to the filename, do not stop the flow
 					title = Path.GetFileNameWithoutExtension(file.FileName);
 				}
 
@@ -91,7 +92,7 @@ namespace E_Kitap_API.Controllers
 
 			await _context.SaveChangesAsync();
 
-			var response = new CreateBookResponse
+			var response = new CreateBookResponse // a response to user
 			{
 				Id = book.Id,
 				Name = book.Name,
@@ -101,7 +102,7 @@ namespace E_Kitap_API.Controllers
 
 			return Ok(response);
 		}
-		[HttpPost("{id}/generate")]
+		[HttpPost("{id}/generate")] // book generator with its id
 		public async Task<IActionResult> GenerateBook(int id)
 		{
 			var book = await _context.Books

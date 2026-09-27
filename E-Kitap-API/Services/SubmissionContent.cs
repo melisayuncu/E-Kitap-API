@@ -1,5 +1,6 @@
 ﻿namespace E_Kitap_API.Services
 {
+	// the content of the submissions 
 	public class SubmissionContent
 	{
 		public int Order { get; set; }

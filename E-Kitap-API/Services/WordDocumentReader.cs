@@ -31,7 +31,7 @@ namespace E_Kitap_API.Services
 
 					result.Paragraphs.Add(text);
 
-					// Başlığı, "Title" stiline sahip ilk paragraftan belirle
+					// Determine the title from the first paragraph that has the Title style
 					var styleId = para.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
 					if (detectedTitle == null && styleId != null &&
 						styleId.Equals("Title", StringComparison.OrdinalIgnoreCase))
@@ -40,7 +40,7 @@ namespace E_Kitap_API.Services
 					}
 				}
 
-				// Title stili bulunamazsa, ilk dolu paragrafı başlık say
+				// if the title style cannot be found, consider the first filled paragraph as a title
 				result.Title = detectedTitle ?? result.Paragraphs.FirstOrDefault() ?? "Başlıksız";
 			}
 

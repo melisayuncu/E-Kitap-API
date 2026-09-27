@@ -4,6 +4,7 @@ using QuestPDF.Infrastructure;
 
 namespace E_Kitap_API.Services
 {
+	// The document that outlines the actual book
 	public class BookDocument : IDocument
 	{
 		private readonly string _bookName;

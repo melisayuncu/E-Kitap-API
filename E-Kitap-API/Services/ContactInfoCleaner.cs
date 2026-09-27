@@ -8,31 +8,27 @@ namespace E_Kitap_API.Services
 			@"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b",
 			RegexOptions.Compiled);
 
-		// ORCID numarasını koruma altına almak için
+		// to protect ORCID number
 		private static readonly Regex OrcidRegex = new(
 			@"ORCID[:\s]*[\d\-]{10,25}",
 			RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-		// Telefon olabilecek aday diziler (rakam + boşluk/parantez/tire/nokta karışımı)
+		// Candidate strings that could be phone numbers (a mix of digits and spaces/parentheses/hyphens/dots)
 		private static readonly Regex PhoneCandidateRegex = new(
 			@"\+?\(?\d[\d\s().\-]{6,18}\d",
 			RegexOptions.Compiled);
 
-		// Çok spesifik, tam ifadeler: kolon şartı yok, yanlış eşleşme riski çok düşük
+		// Very specific, precise expressions
 		private static readonly Regex CompoundLabelRegex = new(
 			@"\b(E-posta\s*/\s*GSM|Cep\s+telefonu)\b\s*[:./]?\s*",
 			RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-		// Tekil, belirsiz kelimeler: MUTLAKA kelime sınırı + MUTLAKA arkasında ':' veya '.' olmalı
-		// (kolon şartı olmazsa "nitel", "İletişim Fakültesi", "Mobile Applications" gibi
-		//  gerçek içerik kelimeleri yanlışlıkla silinir — bunu regresyon testiyle doğruladık)
+		// Singular indefinite words: must have a word boundary + must be followed by ':' or '.'
 		private static readonly Regex SimpleLabelRegex = new(
 			@"\b(Tel\.?No|Telefon|Tel|E-posta|Eposta|E-mail|Email|Mail|GSM|Cep|Mobile|Mobil|İletişim|İrtibat)\s*[:.]\s*",
 			RegexOptions.Compiled | RegexOptions.IgnoreCase);
-		// YENİ: satırın TAM SONUNDA, arkasında gerçek içerik kalmamış etiket kelimelerini temizle
-		// (örn. "E-mail | Mobile" veya tek başına "Telefon" — telefon numarası zaten silinmiş,
-		//  geriye sadece anlamsız etiket kalmış; ama "Mobile Applications" gibi arkasında
-		//  gerçek kelime varsa bu regex eşleşmez, dokunmaz)
+		// Clean up label words at the very end of the line that have no actual content following them (for ex: "E-mail | Mobile" or just "Phone" — the phone number has already been deleted,
+		//  leaving only a meaningless label; however, if there is an actual word following it, such as "Mobile Applications," this regex will not match and will leave it untouched)
 		private static readonly Regex TrailingLabelRegex = new(
 			@"(\b(?:Tel\.?No|Telefon|Tel|E-posta|Eposta|E-mail|Email|Mail|GSM|Cep|Mobile|Mobil|İletişim|İrtibat)\b\s*[|/]?\s*)+$",
 			RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -42,7 +38,7 @@ namespace E_Kitap_API.Services
 			if (string.IsNullOrEmpty(text))
 				return text;
 
-			// 1. ORCID numaralarını geçici olarak koru
+			// Temporarily protect ORCID numbers
 			var orcidMatches = new List<string>();
 			var t = OrcidRegex.Replace(text, match =>
 			{
@@ -50,27 +46,27 @@ namespace E_Kitap_API.Services
 				return $"\uE000{orcidMatches.Count - 1}\uE000";
 			});
 
-			// 2. E-posta adreslerini temizle
+			// Clean the email addresses
 			t = EmailRegex.Replace(t, "");
 
-			// 3. Telefon numaralarını temizle (gerçek rakam sayısı 10-12 arasındaysa)
+			// clear the phone numbers
 			t = PhoneCandidateRegex.Replace(t, match =>
 			{
 				var digitCount = match.Value.Count(char.IsDigit);
 				return (digitCount >= 10 && digitCount <= 12) ? "" : match.Value;
 			});
 
-			// 4. İletişim etiketlerini temizle (önce spesifik/bileşik, sonra tekil-ama-kolonlu olanlar)
+			// Clear communication tags
 			t = CompoundLabelRegex.Replace(t, "");
 			t = SimpleLabelRegex.Replace(t, "");
 			t = TrailingLabelRegex.Replace(t, "");
 
-			// 5. Geriye kalan dağınık ayraçları temizle
+			// Clean up any remaining messy brackets.
 			t = Regex.Replace(t, @"^(?:\s*[|/;,\-])+\s*", "");
 			t = Regex.Replace(t, @"(?:[|/;,\-]\s*)+$", "");
 			t = Regex.Replace(t, @"\s{2,}", " ").Trim();
 
-			// 6. ORCID numaralarını geri yükle
+			// Reload the ORCID numbers
 			for (int i = 0; i < orcidMatches.Count; i++)
 			{
 				t = t.Replace($"\uE000{i}\uE000", orcidMatches[i]);

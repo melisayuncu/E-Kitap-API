@@ -20,7 +20,7 @@ namespace E_Kitap_API.Services
 
 		public byte[] Build(string bookName, List<Submission> submissions, string wwwrootPath)
 		{
-			// 1. Her bildiriyi Word'den oku ve iletişim bilgilerini temizle
+			// Read each submission from Word and remove contact info
 			var contents = new List<SubmissionContent>();
 			foreach (var sub in submissions.OrderBy(s => s.Order))
 			{
@@ -36,7 +36,7 @@ namespace E_Kitap_API.Services
 				});
 			}
 
-			// 2. Her bildirinin tek başına kaç sayfa tuttuğunu ölç
+			// Measure how many pages each individual report takes up
 			foreach (var content in contents)
 			{
 				var measureDoc = new SubmissionPdfDocument(content);
@@ -44,7 +44,7 @@ namespace E_Kitap_API.Services
 				content.PageCount = _pageCounter.CountPages(bytes);
 			}
 
-			// 3. İçindekiler için başlangıç sayfalarını hesapla
+			// Calculate starting pages for the table of contents
 			var currentPage = TocPageCount + 1;
 			foreach (var content in contents)
 			{
@@ -52,7 +52,7 @@ namespace E_Kitap_API.Services
 				currentPage += content.PageCount;
 			}
 
-			// 4. Asıl kitabı üret
+			// Produce the original book
 			var bookDocument = new BookDocument(bookName, contents);
 			return bookDocument.GeneratePdf();
 		}

@@ -21,7 +21,7 @@ namespace E_Kitap_API.Models
 		[MaxLength(255)]
 		public string FileName { get; set; } = string.Empty;
 
-		// Path to the original uploaded docx on the server
+		//original file path to docx
 		[Required]
 		public string OriginalFilePath { get; set; } = string.Empty;
 

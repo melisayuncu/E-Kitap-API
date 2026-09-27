@@ -4,10 +4,10 @@ namespace E_Kitap_API.Models
 {
 	public class Book
 	{
-		public int Id { get; set; }
+		public int Id { get; set; } //identity
 
 		[Required]
-		[MaxLength(200)]
+		[MaxLength(200)] 
 		public string Name { get; set; } = string.Empty;
 
 		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

@@ -4,7 +4,7 @@ using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options =>
+builder.Services.AddCors(options => //For React to be able to access the API
 {
 	options.AddPolicy("ReactApp", policy =>
 	{
@@ -34,7 +34,7 @@ builder.Services.AddScoped<E_Kitap_API.Services.BookPdfBuilder>();
 
 var app = builder.Build();
 
-app.UseStaticFiles();
+app.UseStaticFiles(); //To enable external access to files in the wwwroot folder (including PDFs) via URL
 
 app.UseCors("ReactApp");
 

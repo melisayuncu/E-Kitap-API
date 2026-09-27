@@ -45,6 +45,18 @@ export default function BookUploadForm({ onSubmit, isSubmitting }: BookUploadFor
     setFiles((prev) => prev.filter((_, i) => i !== index));
   }
 
+    function handleMoveFile(index: number, direction: "up" | "down") {
+        const targetIndex = direction === "up" ? index - 1 : index + 1;
+        if (targetIndex < 0 || targetIndex >= files.length) return;
+
+        setFiles((prev) => {
+            const updated = [...prev];
+            [updated[index], updated[targetIndex]] = [updated[targetIndex], updated[index]];
+            return updated;
+        });
+    }
+
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (bookName.trim() === "") {
@@ -60,57 +72,90 @@ export default function BookUploadForm({ onSubmit, isSubmitting }: BookUploadFor
 
   const isComplete = files.length === REQUIRED_FILE_COUNT;
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="bookName">Kitap Adı</label>
-        <input
-          id="bookName"
-          type="text"
-          value={bookName}
-          onChange={(e) => setBookName(e.target.value)}
-          disabled={isSubmitting}
-          placeholder="Örn: 2026 Konferansı Bildiri Kitabı"
-        />
-      </div>
+    return (
+        <form onSubmit={handleSubmit}>
+            <div className="field">
+                <label htmlFor="bookName">Kitap Adı</label>
+                <input
+                    id="bookName"
+                    type="text"
+                    value={bookName}
+                    onChange={(e) => setBookName(e.target.value)}
+                    disabled={isSubmitting}
+                    placeholder="Örn: 2026 Konferansı Bildiri Kitabı"
+                />
+            </div>
 
-      <div>
-        <label htmlFor="fileInput">
-          Bildiri Dosyaları ({files.length}/{REQUIRED_FILE_COUNT})
-        </label>
-        <input
-          id="fileInput"
-          ref={fileInputRef}
-          type="file"
-          accept=".docx"
-          multiple
-          onChange={handleFileChange}
-          disabled={isComplete || isSubmitting}
-        />
-      </div>
+            <div className="field">
+                <label htmlFor="fileInput">
+                    Bildiri Dosyaları ({files.length}/{REQUIRED_FILE_COUNT})
+                </label>
+                <div className="file-input-row">
+                    <input
+                        id="fileInput"
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".docx"
+                        multiple
+                        onChange={handleFileChange}
+                        disabled={isComplete || isSubmitting}
+                    />
+                </div>
 
-      {error && <p role="alert">{error}</p>}
+                {files.length > 0 && (
+                    <ol className="file-list">
+                        {files.map((file, index) => (
+                            <li key={`${file.name}-${index}`}>
+                                <span className="file-list__name">
+                                    {index + 1}. {file.name}
+                                </span>
+                                <div className="file-list__actions">
+                                    <button
+                                        type="button"
+                                        className="btn-icon"
+                                        onClick={() => handleMoveFile(index, "up")}
+                                        disabled={isSubmitting || index === 0}
+                                        aria-label="Yukarı taşı"
+                                    >
+                                        ▲
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn-icon"
+                                        onClick={() => handleMoveFile(index, "down")}
+                                        disabled={isSubmitting || index === files.length - 1}
+                                        aria-label="Aşağı taşı"
+                                    >
+                                        ▼
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn-remove"
+                                        onClick={() => handleRemoveFile(index)}
+                                        disabled={isSubmitting}
+                                    >
+                                        Kaldır
+                                    </button>
+                                </div>
+                            </li>
+                        ))}
+                    </ol>
+                )}
+            </div>
 
-      {files.length > 0 && (
-        <ol>
-          {files.map((file, index) => (
-            <li key={`${file.name}-${index}`}>
-              {index + 1}. {file.name}
-              <button
-                type="button"
-                onClick={() => handleRemoveFile(index)}
-                disabled={isSubmitting}
-              >
-                Kaldır
-              </button>
-            </li>
-          ))}
-        </ol>
-      )}
+            {error && (
+                <div className="error-banner" role="alert">
+                    {error}
+                </div>
+            )}
 
-      <button type="submit" disabled={!isComplete || bookName.trim() === "" || isSubmitting}>
-        {isSubmitting ? "Kitap Oluşturuluyor..." : "Kitabı Oluştur"}
-      </button>
-    </form>
-  );
+            <button
+                type="submit"
+                className="btn-primary"
+                disabled={!isComplete || bookName.trim() === "" || isSubmitting}
+            >
+                {isSubmitting ? "Kitap Oluşturuluyor..." : "Kitabı Oluştur"}
+            </button>
+        </form>
+    );
 }

@@ -4,8 +4,7 @@ using QuestPDF.Infrastructure;
 
 namespace E_Kitap_API.Services
 {
-	// Tek bir bildirinin gövde içeriğini (başlık + paragraflar) sayfaya döken parça.
-	// Hem "sayfa say" testinde hem asıl kitapta aynı şekilde kullanılır.
+	// A component that renders the body content (title + paragraphs) of a single declaration onto the page. It is used in the same way for both page counting and the actual book.
 	public static class SubmissionContentComposer
 	{
 		public static void Compose(ColumnDescriptor column, SubmissionContent submission)
@@ -21,8 +20,7 @@ namespace E_Kitap_API.Services
 			}
 		}
 	}
-
-	// Sadece "bu bildiri tek başına kaç sayfa tutuyor?" ölçümü için kullanılan yardımcı belge.
+	// A supplementary document used solely to measure how many pages this paper spans on its own.
 	public class SubmissionPdfDocument : IDocument
 	{
 		private readonly SubmissionContent _submission;
@@ -42,6 +40,7 @@ namespace E_Kitap_API.Services
 				page.Margin(2, Unit.Centimetre);
 				page.DefaultTextStyle(x => x.FontSize(11));
 
+				//page number
 				page.Footer().AlignCenter().Text(x =>
 				{
 					x.CurrentPageNumber();
