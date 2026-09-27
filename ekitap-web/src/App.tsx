@@ -57,7 +57,14 @@ function App() {
   useEffect(() => {
     if (state !== "submitting") return;
     const interval = setInterval(() => {
-      setFactIndex((prev) => (prev + 1) % FUN_FACTS.length);
+        setFactIndex((prev) => {
+            if (FUN_FACTS.length <= 1) return prev;
+            let next = Math.floor(Math.random() * FUN_FACTS.length);
+            while (next === prev) {
+                next = Math.floor(Math.random() * FUN_FACTS.length);
+            }
+            return next;
+        });
     }, 5000);
     return () => clearInterval(interval);
   }, [state]);
@@ -65,9 +72,9 @@ function App() {
     async function handleSubmit(bookName: string, files: File[]) {
         setState("submitting");
         setErrorMessage(null);
-        setFactIndex(0);
+        setFactIndex(Math.floor(Math.random() * FUN_FACTS.length));
 
-        const MIN_LOADING_MS = 6000;
+        const MIN_LOADING_MS = 8000;
         const startedAt = Date.now();
 
         async function waitForMinimumDuration() {
