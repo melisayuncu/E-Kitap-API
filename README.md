@@ -27,8 +27,8 @@ Update-Database
 
 1. `ekitap-web` klasörünü Visual Studio’da veya terminalde açın.
 2. Paketleri kurun:
-3. npm install
-4. npm run dev
+- npm install
+- npm run dev
 5. Tarayıcıda `http://localhost:5173` adresini açın.
 
 **Not:** Backend'in CORS ayarı `http://localhost:5173` origin'ine izin verecek şekilde yapılandırılmıştır (`Program.cs`). Frontend farklı bir portta çalışırsa backend'deki CORS policy'sinin de güncellenmesi gerekir.
