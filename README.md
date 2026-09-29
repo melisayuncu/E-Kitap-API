@@ -105,7 +105,7 @@ PDF üretimi sırasında (orijinal docx değiştirilmeden) çok aşamalı bir re
 - Dosya sıralaması sürükle-bırak yerine yukarı/aşağı ok butonlarıyla yapılıyor — mobilde ve diğer dokunmatik cihazlarda güvenilir çalışması için.
 - Site tasarımı https://akap.tr/ web sitesi tasarımından esinlenildi.
 
-## Sınırlamalar
+## Bilinen Eksikler
 
 - İçindekiler sayfasının tek sayfaya sığacağı varsayılıyor (10 bildirilik testlerde sorun çıkmadı, ama çok uzun başlıklarla riskli).
 - Bildiri içindeki İngilizce başlıklar içindekiler listesine dahil edilmiyor, sadece Türkçe başlık kullanılıyor.
