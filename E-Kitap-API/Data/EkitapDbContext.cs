@@ -20,7 +20,7 @@ namespace E_Kitap_API.Data
 
 			modelBuilder.Entity<Book>()
 				.Property(b => b.Status)
-				.HasConversion<string>(); // enum'u veritabanında okunabilir metin olarak tut
+				.HasConversion<string>(); //Store the enum as readable text in the database.
 
 			base.OnModelCreating(modelBuilder);
 		}

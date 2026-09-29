@@ -14,7 +14,7 @@ namespace E_Kitap_API.Services
 
 			column.Item().PaddingTop(10);
 
-			foreach (var paragraph in submission.Paragraphs.Skip(1)) // 0. paragraf başlıkla aynı, tekrar yazma
+			foreach (var paragraph in submission.Paragraphs.Skip(1)) //The first paragraph is same with title
 			{
 				column.Item().PaddingBottom(8).Text(paragraph).FontSize(11).LineHeight(1.3f);
 			}

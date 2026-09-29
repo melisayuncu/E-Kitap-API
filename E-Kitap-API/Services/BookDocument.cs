@@ -33,7 +33,7 @@ namespace E_Kitap_API.Services
 
 				page.Content().Column(column =>
 				{
-					// Kapak + İçindekiler
+					// Cover and Table of Contents
 					column.Item().Text(_bookName).FontSize(20).Bold();
 					column.Item().PaddingTop(15).Text("İçindekiler").FontSize(14).Bold();
 					column.Item().PaddingTop(10);
@@ -49,7 +49,7 @@ namespace E_Kitap_API.Services
 
 					column.Item().PageBreak();
 
-					// Bildirilerin gövdesi
+					// content
 					for (int i = 0; i < _submissions.Count; i++)
 					{
 						SubmissionContentComposer.Compose(column, _submissions[i]);
