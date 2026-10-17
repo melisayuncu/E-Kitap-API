@@ -103,7 +103,6 @@ PDF üretimi sırasında (orijinal docx değiştirilmeden) çok aşamalı bir re
 - Loading ekranında gerçek yüzde ilerleme yerine dönen bilgi mesajları (TÜBİTAK Bilim Genç kaynaklı, kaynak linkli) gösteriliyor; backend'in gerçek süresi çok kısa olabildiği için ekranın en az 6 saniye görünmesi frontend'de garanti altına alındı. Bu bilgiler, bekleme aşamasında bir genel kültür yarışması gibi, şıklı sorular halinde sunulabilirdi. Fakat PDF oluşturma için bekleme süresi bu kadar uzun olmadığından (süre uzatılabilir fakat bu da artık kullanıcıyı sıkabilir) vazgeçildi.
 - Arayüz, dar ekranlarda (telefon/tablet) da rahat kullanılabilmesi için tasarlandı. Dar ekranlarda boşluklar daralıyor, dosya listesi ve butonlar alt alta geçip dokunması kolay büyüklükte gösteriliyor, PDF görüntüleyici de ekran genişliğine göre otomatik küçülüp büyüyor.
 - Dosya sıralaması sürükle-bırak yerine yukarı/aşağı ok butonlarıyla yapılıyor — mobilde ve diğer dokunmatik cihazlarda güvenilir çalışması için.
-- Site tasarımı https://akap.tr/ web sitesi tasarımından esinlenildi.
 
 ## Bilinen Eksikler
 
